@@ -51,6 +51,7 @@ UI CNT = 0;
 
 void BitExtract(UC bits);
 void SerialDIN(UC, UC);
+void SSD_Show_CCW(UC*);
 void INIT();
 
 void main(void)
@@ -61,19 +62,7 @@ void main(void)
     INIT();
 
     while (1) {
-        if (CNT > 24000) {
-            CNT = 0;
-            (++idx == 20) && (idx = 0);
-        }
-
-        for (i = 1; i <= 8; i++) {
-            CNT++;
-            if (SSD_PATTERN[idx][0] == i)
-                SerialDIN(SSD_PATTERN[idx][0], SSD_PATTERN[idx][1]);
-            else
-                SerialDIN(i, 0x00);
-        }
-        CNT++;
+        void SSD_Show_CCW()
     }
 }
 
@@ -98,6 +87,17 @@ void SerialDIN(UC address, UC dat)
     BitExtract(dat);
     LOAD = 1;
     CNT++;
+}
+
+void SSD_Show_CCW(UC* num)
+{
+    UI i;
+    static UC shift = 0;
+
+    SerialDIN(SSD_PATTERN[shift][0], SSD_PATTERN[shift][1]);
+
+    (++shift == 20) && (shift = 0);
+    delay_ms(1000);
 }
 
 void INIT()
