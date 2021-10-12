@@ -38,16 +38,18 @@ UC SSD_CODE[] = {
 
 void BitExtract(UC bits);
 void SerialDIN(UC, UC);
-void SSD_Show(UC*);
+// void SSD_Show(UC*);
+void SSD_Show_Scroll(UC*);
 void INIT();
+void delay_ms(UI);
 
 void main(void)
 {
-    UC ssd_num[8] = {7, 8, 7, 6, 3, 7, 6, 3};
+    UC ssd_num[8] = {1, 2, 3, 4, 5, 6, 7, 8};
 
     INIT();
 
-    while (1)   SSD_Show(ssd_num);
+    while (1)   SSD_Show_Scroll(ssd_num);
 }
 
 void BitExtract(UC bits)
@@ -70,12 +72,24 @@ void SerialDIN(UC address, UC dat)
     LOAD = 1;
 }
 
-void SSD_Show(UC* num)
+// void SSD_Show(UC* num)
+// {
+//     UI i;
+
+//     for (i = 1; i <= 8; i++)
+//         SerialDIN(i, SSD_CODE[num[8 - i]]);
+// }
+
+void SSD_Show_Scroll(UC* num)
 {
     UI i;
+    static UC shift = 0;
 
     for (i = 1; i <= 8; i++)
-        SerialDIN(i, SSD_CODE[num[8 - i]]);
+        SerialDIN(i, SSD_CODE[num[(8 - i + shift) % 8]]);
+
+    (++shift == 8) && (shift = 0);
+    delay_ms(1000);
 }
 
 void INIT()
@@ -85,4 +99,13 @@ void INIT()
     SerialDIN(DECODE_MODE,  0x00);  // no decoding
     SerialDIN(SCAN_LIMIT,   0x07);  // use all 8 digits
     SerialDIN(INTENSITY,    0x00);  // brightness
+}
+
+void delay_ms(UI input_ms)
+{
+    UI cnt1 = 0;
+    UC cnt2 = 0;
+
+    for (cnt1 = 0; cnt1 < input_ms; cnt1++)
+        for (cnt2 = 0; cnt2 < 120; cnt2++) ;
 }
