@@ -62,7 +62,7 @@ void main(void)
     INIT();
 
     while (1) {
-        void SSD_Show_CCW()
+        void SSD_Show_CCW();
     }
 }
 
@@ -89,9 +89,8 @@ void SerialDIN(UC address, UC dat)
     CNT++;
 }
 
-void SSD_Show_CCW(UC* num)
+void SSD_Show_CCW()
 {
-    UI i;
     static UC shift = 0;
 
     SerialDIN(SSD_PATTERN[shift][0], SSD_PATTERN[shift][1]);
