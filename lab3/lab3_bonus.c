@@ -5,19 +5,19 @@
 #define UI unsigned int
 #define UC unsigned char
 #define BTN0 P2_0 	// Scroll down
-#define BTN1 P2_1	// Scroll up
+#define BTN1 P2_1		// Scroll up
 
 void Render(uint8_t);
 void delay_ms(UI);
-void StringScroll(char*);
 
 void main()
 {		
-    uint8_t scroll = 0, clean;
+    uint8_t scroll = 0;
     UI debtn0, debtn1;
     SDA = 1;
     SCL = 1;
     OLED_Init();		  // Check oled_i2c.c file for SCL,SDA pin connection
+		Render(scroll);
     
     while(1)
     {
@@ -25,11 +25,11 @@ void main()
 			delay_ms(10);
             if (BTN0 == 0) {
                 ((++scroll) == 8) && (scroll = 0);
-                Render(sroll);
+                Render(scroll);
             }
             if (BTN1 == 0) {
                 ((--scroll) == 8) && (scroll = 0);
-                Render(sroll);
+                Render(scroll);
             }
 		}
 
@@ -88,4 +88,13 @@ void Render(uint8_t scroll)
     OLED_DisplayString("Oled Interface");
     OLED_SetCursor((scroll + 8) % 8,30);
     OLED_DisplayString("Hello World!!!!!");
+}
+
+void delay_ms(UI input_ms)
+{
+    UI cnt1 = 0;
+    UC cnt2 = 0;
+
+    for (cnt1 = 0; cnt1 < input_ms; cnt1++)
+        for (cnt2 = 0; cnt2 < 120; cnt2++) ;
 }
