@@ -15,9 +15,43 @@
 #define SHUTDOWN        0x0C
 #define DISPLAY_TEST    0x0F
 
+UC SSD_PATTERN[20][2] = {
+    // data >>= 1
+    {1, 0x40},  // 01000000
+    {1, 0x20},  // 01000000
+    {1, 0x10},  // 01000000
+    {1, 0x08},  // 00000100
+
+    // address++
+    {2, 0x08},  // 00000100
+    {3, 0x08},  // 00000100
+    {4, 0x08},  // 00000100
+    {5, 0x08},  // 00000100
+    {6, 0x08},  // 00000100
+    {7, 0x08},  // 00000100
+
+    // if (data == 0x02)
+    //     data = 0x40;
+    // else
+    //     date >>= 1;
+    {8, 0x08},  // 00000100
+    {8, 0x04},  // 01000000
+    {8, 0x02},  // 00100000
+    {8, 0x40},  // 00010000
+
+
+    // address--
+    {7, 0x40},  // 00010000
+    {6, 0x40},  // 00010000
+    {5, 0x40},  // 00010000
+    {4, 0x40},  // 00010000
+    {3, 0x40},  // 00010000
+    {2, 0x40},  // 00010000
+};
+
 void BitExtract(UC bits);
 void SerialDIN(UC, UC);
-void SSD_Show_All();
+void SSD_Show_CCW();
 void INIT();
 
 void main(void)
@@ -28,13 +62,13 @@ void main(void)
     INIT();
 
     while (1) {
-        if((btn0 == 0 && debtn0 == 1) || (BTN1 == 0 && debtn1 == 1)) {
+        if((BTN0 == 0 && debtn0 == 1) || (BTN1 == 0 && debtn1 == 1)) {
 			delay_ms(10);
 			(BTN0 == 0) && (--brightness = 0x00) && (brightness = 0x0F);
 			(BTN1 == 0) && (++brightness = 0x10) && (brightness = 0x01);
 		    SerialDIN(INTENSITY, brightness - 1);
         }
-        SSD_Show_All();
+        SSD_Show_CCW();
         debtn0 = BTN0;
         debtn1 = BTN1;
         delay_ms(10);
@@ -57,11 +91,20 @@ void BitExtract(UC bits)
 void SerialDIN(UC address, UC dat)
 {
     LOAD = 0;
-    CNT++;
     BitExtract(address);
     BitExtract(dat);
     LOAD = 1;
-    CNT++;
+}
+
+void SSD_Show_CCW()
+{
+    static UC shift = 0;
+
+    SerialDIN(SSD_PATTERN[shift - 1])
+    SerialDIN(SSD_PATTERN[shift][0], SSD_PATTERN[shift][1]);
+
+    (++shift == 20) && (shift = 0);
+    delay_ms(1000);
 }
 
 void SSD_Show_All()

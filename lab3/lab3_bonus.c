@@ -17,8 +17,8 @@ void main()
     SDA = 1;
     SCL = 1;
     OLED_Init();		  // Check oled_i2c.c file for SCL,SDA pin connection
-		Render(scroll);
-    
+	Render(scroll);
+
     while(1)
     {
         if((BTN0 == 0) && (debtn0 == 1) || (BTN1 == 0) && (debtn1 == 1)) {
@@ -41,11 +41,13 @@ void main()
 
 void Render(uint8_t scroll)
 {
+    UI i;
+
     SDA = 1;
     SCL = 1;
-    
+
     // Display single character
-    OLED_SetCursor(0,0);  // Set cursor at 0th-line 0th-Position
+    OLED_SetCursor(scroll,0);  // Set cursor at 0th-line 0th-Position
     OLED_DisplayString("8051 & OLED");
 
     // Display pattern 
@@ -70,7 +72,7 @@ void Render(uint8_t scroll)
     oledSendData(0xc3);
     oledSendData(0xe7);
     oledSendData(0xff);
-    
+
     oledSendData(0x00); // triangle
     oledSendData(0x80);
     oledSendData(0xc0);
@@ -81,12 +83,34 @@ void Render(uint8_t scroll)
     oledSendData(0xfe);
     oledSendData(0xff);
 
+    OLED_SetCursor((scroll + 1) % 8, 0);
+    for (i = 0; i < 128; i++)
+        oledSendData(0);
+
     // Display String
     OLED_SetCursor((scroll + 2) % 8,10);  //Set cursor at 2nd-line 10th-Position
     OLED_DisplayString("Lab3 Demo");	
+
+    OLED_SetCursor((scroll + 3) % 8, 0);
+    for (i = 0; i < 128; i++)
+        oledSendData(0);
+
     OLED_SetCursor((scroll + 4) % 8,20);
     OLED_DisplayString("Oled Interface");
-    OLED_SetCursor((scroll + 8) % 8,30);
+
+    OLED_SetCursor((scroll + 5) % 8, 0);
+    for (i = 0; i < 128; i++)
+        oledSendData(0);
+
+    OLED_SetCursor((scroll + 6) % 8, 0);
+    for (i = 0; i < 128; i++)
+        oledSendData(0);
+
+    OLED_SetCursor((scroll + 7) % 8, 0);
+    for (i = 0; i < 128; i++)
+        oledSendData(0);
+
+    OLED_SetCursor((scroll + 8) % 8, 30);
     OLED_DisplayString("Hello World!!!!!");
 }
 
