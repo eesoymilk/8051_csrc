@@ -7,6 +7,7 @@
 #define BTN0 P2_0 	// Scroll down
 #define BTN1 P2_1		// Scroll up
 
+void ClearRow(uint8_t);
 void Render(uint8_t);
 void delay_ms(UI);
 
@@ -91,27 +92,25 @@ void Render(uint8_t scroll)
     OLED_SetCursor((scroll + 2) % 8,10);  //Set cursor at 2nd-line 10th-Position
     OLED_DisplayString("Lab3 Demo");	
 
-    OLED_SetCursor((scroll + 3) % 8, 0);
-    for (i = 0; i < 128; i++)
-        oledSendData(0);
+    ClearRow((scroll + 3) % 8);
 
     OLED_SetCursor((scroll + 4) % 8,20);
     OLED_DisplayString("Oled Interface");
 
-    OLED_SetCursor((scroll + 5) % 8, 0);
-    for (i = 0; i < 128; i++)
-        oledSendData(0);
-
-    OLED_SetCursor((scroll + 6) % 8, 0);
-    for (i = 0; i < 128; i++)
-        oledSendData(0);
-
-    OLED_SetCursor((scroll + 7) % 8, 0);
-    for (i = 0; i < 128; i++)
-        oledSendData(0);
+    ClearRow((scroll + 5) % 8);
+    ClearRow((scroll + 6) % 8);
+    ClearRow((scroll + 7) % 8);
 
     OLED_SetCursor((scroll + 8) % 8, 30);
     OLED_DisplayString("Hello World!!!!!");
+}
+
+void ClearRow(uint8_t row)
+{
+    UI i;
+    OLED_SetCursor(row, 0);
+    for (i = 0; i < 128; i++)
+        oledSendData(0);
 }
 
 void delay_ms(UI input_ms)
