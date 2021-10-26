@@ -14,9 +14,9 @@
 void BitExtract(UC);
 void SerialDIN(UC, UC);
 void SSD_ShowTime(UL);
-void delay_ms(UI);
 
 UC hall_last_state = 0;
+UL cnt = 0;
 UL timer_ms = 0;
 UC SSD_CODE[] = {
     0x7E,   // 0b01111110: 0
@@ -37,17 +37,15 @@ UC SSD_CODE[] = {
     0x47    // 0b01000111: F
 };
 
-
 void T0_isr(void) interrupt 1
 {
     TH0 = (65536-1000) / 256;
 	TL0 = (65536-1000) % 256;
 
-    timer_ms++;
-
-	if((Hall_In == 0) && (hall_last_state == 1)) {
-        SSD_ShowTime(timer_ms);
-        timer_ms = 0;
+    cnt++;
+	if(Hall_In == 0 && hall_last_state == 1) {
+        timer_ms = cnt;
+        cnt = 0;
     }
 
     hall_last_state = Hall_In;
@@ -58,17 +56,18 @@ int main() {
     SerialDIN(0x0F, 0x00);  // Overwrite SHUTDOWN
     SerialDIN(0x09, 0x00);  // no decoding
     SerialDIN(0x0B, 0x07);  // use all 8 digits
-    SerialDIN(0x0A, 0x00);  // brightness
+    SerialDIN(0x0A, 0x07);  // brightness
 	TMOD = 0x01;
-	TH0 = (65536-1000) / 256;
-	TL0 = (65536-1000) % 256;
-	ET0 = 1;
-	EA = 1;
-	TR0 = 1;
-
+	TH0  = (65536 - 1000) / 256;
+	TL0  = (65536 - 1000) % 256;
+	ET0  = 1;
+	EA   = 1;
+	TR0  = 1;
     Hall_In = 1;    // Initialize Hall sensor signal (deactivated)
 
-    while(1) ;
+    while (1) {
+        SSD_ShowTime(timer_ms);
+    }
 }
 
 void BitExtract(UC bits)
@@ -93,27 +92,21 @@ void SerialDIN(UC address, UC dat)
 
 void SSD_ShowTime(UL num)
 {
-    UI digit = 0, i;
+    UC ssd_pattern;
+    UI digit, i;
 
     for (i = 1; i <= 8; i++) {
-        if (i > 4 && num == 0)
+        // output nothing to the ssd
+        if (i > 4 && num == 0) {
             SerialDIN(i, 0);
-        else {
-            digit = num % 10;
-            num /= 10;
-            if (i == 4)
-                SerialDIN(i, SSD_CODE[digit] | 0x80);
-            else
-                SerialDIN(i, SSD_CODE[digit]);
+            continue;
         }
+
+        digit = num % 10;
+        ssd_pattern = SSD_CODE[digit];
+        if (i == 4)
+            ssd_pattern |= 0x80;
+        SerialDIN(i, ssd_pattern);
+        num /= 10;
     }
-}
-
-void delay_ms(UI input_ms)
-{
-    UI cnt1;
-    UC cnt2;
-
-    for (cnt1 = 0; cnt1 < input_ms; cnt1++)
-        for (cnt2 = 0; cnt2 < 120; cnt2++) ;
 }
