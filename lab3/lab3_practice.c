@@ -65,7 +65,7 @@ void main()
 
     // Display String
     OLED_SetCursor(2,10);  //Set cursor at 2nd-line 10th-Position
-    OLED_DisplayString("Lab3 Demo");	
+    OLED_DisplayString("Lab3 Demo");
     OLED_SetCursor(4,20);
     OLED_DisplayString("Oled Interface");
     // OLED_SetCursor(6,30);
