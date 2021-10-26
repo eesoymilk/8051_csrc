@@ -18,7 +18,7 @@
 #define BTN2 P2_6
 #define BTN3 P2_5
 
-#define DIN     P2_4
+#define DIN     P0_6
 #define LOAD    P2_3
 #define CLK     P2_2
 #define LED     P1
@@ -42,7 +42,7 @@ UC SSD_CODE[] = {
     0x47    // 0b01000111: F
 };
 
-void BitExtract(UC bits);
+void BitExtract(UC);
 void SerialDIN(UC, UC);
 void SSD_Show(UL);
 UL CAL(UL, UL, UC);
@@ -54,7 +54,7 @@ void main(void)
     UC debtn_op, debtn_bk, debtn_ac, debtn_eq;
 
     UC s_scan, scan = 0, s_btn1, s_btn2, s_btn3;
-    UC s_op = 0, op, cur_rst, led = 0;
+    UC s_op = 0, op, cur_rst, led = 0, i;
 
     UL prv = 0, cur = 0;
 
@@ -156,11 +156,8 @@ void main(void)
 
         (++scan == 3) && (scan = 0);
 
-        (s_op == 0) && (led = 0x00);
-        (s_op == 1) && (led = 0x80);
-        (s_op == 2) && (led = 0x40);
-        (s_op == 3) && (led = 0x20);
-        (s_op == 4) && (led = 0x10);
+        for (led = 0x10, i = 4 - s_op; i; --i) led <<= 1;
+        LED = ~led;
 
         debtn0 = BTN0;
         debtn1 = BTN1;
@@ -170,7 +167,6 @@ void main(void)
         debtn_bk = BTN_BK;
         debtn_ac = BTN_AC;
         debtn_eq = BTN_EQ;
-        LED = ~led;
 
         SSD_Show(cur);
     }
