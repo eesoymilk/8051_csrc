@@ -68,20 +68,9 @@ void main(void)
 
         SCAN1 = SCAN2 = SCAN3 = 1;
 
-        switch (scan)
-        {
-        case 0:
-            SCAN1 = 0;
-            break;
-        case 1:
-            SCAN2 = 0;
-            break;
-        case 2:
-            SCAN3 = 0;
-            break;
-        default:
-            SCAN3 = 0;
-        }
+        if (scan == 0)  SCAN1 = 0;
+        if (scan == 1)  SCAN2 = 0;
+        if (scan == 2)  SCAN3 = 0;
 
         if (s_scan == scan) {
             (BTN1 == 1) && (s_btn1 = 0);
