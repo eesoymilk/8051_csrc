@@ -84,8 +84,12 @@ void main(void)
         // RECEIVEING
         if (ReceivedFlag == 1) {
             if (idx < 7) {
-                if (ReceivedData == KEY[idx])
+                if (ReceivedData == KEY[idx]) {
                     SerialDIN(7 - idx, SSD_CODE[KEY[idx++]]);
+                    SerialDIN(8, SSD_CODE[1]);
+                } else {
+                    SerialDIN(8, SSD_CODE[0]);
+                }
             } else {
                 idx = 0;
             }
@@ -93,7 +97,6 @@ void main(void)
 		}
         // GAME STATE
         if (idx == 0 && ingame == 0) {
-            SerialDIN(8, SSD_CODE[0]);
             for (i = 1; i < 8; i++)
                 SerialDIN(i, 0);
             ingame = 1;
