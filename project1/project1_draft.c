@@ -9,12 +9,12 @@
 #define BTN_AC P2_0
 #define BTN_EQ P2_1
 
-#define SCAN1 P3_6
+#define SCAN1 P3_6  // rows
 #define SCAN2 P3_5
 #define SCAN3 P3_4
 
 #define BTN0 P0_7
-#define BTN1 P2_7
+#define BTN1 P2_7   // column
 #define BTN2 P2_6
 #define BTN3 P2_5
 
@@ -65,7 +65,6 @@ void main(void)
     SerialDIN(0x0A, 0x00);  // brightness
 
     while (1) {
-
         SCAN1 = SCAN2 = SCAN3 = 1;
 
         if (scan == 0)  SCAN1 = 0;
@@ -145,7 +144,8 @@ void main(void)
 
         (++scan == 3) && (scan = 0);
 
-        for (led = 0x10, i = 4 - s_op; i; --i) led <<= 1;
+        for (led = 0x10, i = 4 - s_op; i; --i) 
+            led <<= 1;
         LED = ~led;
 
         debtn0 = BTN0;
