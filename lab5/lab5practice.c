@@ -66,23 +66,21 @@ void main(void)
         if (!BTN1 || !BTN2 || !BTN3 || !BTN4) {
             if (cnt < 3) {
 				if (++cnt == 3) {
-                    (BTN1 == 0) && (SendData = 1);
-                    (BTN2 == 0) && (SendData = 2);
-                    (BTN3 == 0) && (SendData = 3);
-                    (BTN4 == 0) && (SendData = 4);
+                    (!BTN1) && (SendData = 1);
+                    (!BTN2) && (SendData = 2);
+                    (!BTN3) && (SendData = 3);
+                    (!BTN4) && (SendData = 4);
                     SendFlag = 1;
 				}
 			}
         } else {
             cnt = 0;
         }
-
         // SENDING
 		if (SendFlag == 1) {
             SBUF = SendData;
             SendFlag = 0;
 		}
-
         // RECEIVEING
         if (ReceivedFlag == 1) {
             if (idx < 7) {
@@ -93,7 +91,6 @@ void main(void)
             }
             ReceivedFlag = 0;
 		}
-
         // GAME STATE
         if (idx == 0 && ingame == 0) {
             SerialDIN(8, SSD_CODE[0]);
@@ -111,7 +108,6 @@ void main(void)
 void BitExtract(UC bits)
 {
     UC i;
-
     for (i = 0; i < 8; i++) {
         CLK = 0;
         DIN = (bits & 0x80);
