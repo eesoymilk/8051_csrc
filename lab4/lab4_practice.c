@@ -43,7 +43,7 @@ void T0_isr(void) interrupt 1
 	TL0 = (65536-1000) % 256;
 
     cnt++;
-	if(Hall_In == 0 && hall_last_state == 1) {
+	if (Hall_In == 0 && hall_last_state == 1) {
         timer_ms = cnt;
         cnt = 0;
     }

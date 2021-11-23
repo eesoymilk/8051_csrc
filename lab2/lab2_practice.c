@@ -49,7 +49,7 @@ UC SSD_PATTERN[20][2] = {
 
 void BitExtract(UC bits);
 void SerialDIN(UC, UC);
-void SSD_Show_CCW(UC*);
+void SSD_Show_CCW();
 void INIT();
 
 void main(void)
