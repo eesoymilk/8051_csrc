@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "lab4_practice": "cpp"
+        "lab4_practice": "cpp",
+        "REGX51.H": "cpp"
     }
 }

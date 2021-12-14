@@ -88,13 +88,13 @@ void SerialDIN(UC address, UC dat1, UC dat2)
     LOAD = 1;
 }
 
-// void MAT_Show(UC* mat1, UC* mat2)
-// {
-//     UC i;
+void MAT_Show(UC* mat1, UC* mat2)
+{
+    UC i;
 
-//     for (i = 0; i < 8; i++)
-//         SerialDIN(i + 1, mat1[i], mat2[i]);
-// }
+    for (i = 0; i < 8; i++)
+        SerialDIN(i + 1, mat1[i], mat2[i]);
+}
 
 void MAT_Show_Sroll(UC* mat)
 {
