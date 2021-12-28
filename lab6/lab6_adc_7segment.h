@@ -60,7 +60,7 @@ char SPI_WR(char data_in)
   return data_out;
 }
 
-unsigned int read_adc3202(unsigned char channel){
+unsigned int read_adc3202(unsigned char channel) {
   
   unsigned int data_buff = 0;
   unsigned char spi_buff = 0;
