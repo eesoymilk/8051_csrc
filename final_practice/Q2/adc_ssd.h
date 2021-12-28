@@ -71,8 +71,14 @@ void SSD_Number(long num)
 {
     UI i, n;
 
-    n = num > 0 ? num : num * -1;
+    if (num == 0) {
+        SerialDIN(1, SSD_CODE[0]);
+        for (i = 2; i <= 8 && n; i++) 
+            SerialDIN(i, 0);
+        return;
+    }
 
+    n = num > 0 ? num : num * -1;
     for (i = 1; i <= 8 && n; i++) {
         SerialDIN(i, SSD_CODE[n % 10]);
         n /= 10;

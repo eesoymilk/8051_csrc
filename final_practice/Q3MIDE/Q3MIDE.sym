@@ -182,6 +182,7 @@ Symbol Table
     _AC                                                         =  00D6 G
     _ACC                                                        =  00E0 G
     _B                                                          =  00F0 G
+  6 _BUZZ                                                          001E GR
  19 _BitExtract                                                    00B6 GR
     _CY                                                         =  00D7 G
     _DPH                                                        =  0083 G
@@ -255,6 +256,7 @@ Symbol Table
     _PX1                                                        =  00BA G
     _RB8                                                        =  009A G
     _RD                                                         =  00B7 G
+  6 _RE                                                            0013 GR
     _REN                                                        =  009C G
     _RI                                                         =  0098 G
     _RS0                                                        =  00D3 G
@@ -273,10 +275,12 @@ Symbol Table
  19 _SSD_Show                                                      0216 GR
  19 _SSD_Show_Scroll                                               0270 GR
   6 _SSD_Show_Scroll_shift_1_1                                     0010 R
+  6 _STATE                                                         0012 GR
  19 _SerialDIN                                                     00CC GR
  19 _Single_ReadI2C                                                0418 GR
  19 _Single_WriteI2C                                               03EB GR
     _T0                                                         =  00B4 G
+ 19 _T0_isr                                                        059F GR
     _T1                                                         =  00B5 G
     _TB8                                                        =  009B G
     _TCON                                                       =  0088 G
@@ -307,20 +311,21 @@ Symbol Table
     __modsint                                                      **** GX
     __moduint                                                      **** GX
     __sdcc_gsinit_startup                                          **** GX
- 10 __sdcc_program_startup                                         0003 GR
+ 10 __sdcc_program_startup                                         000E GR
   8 __start__stack                                                 0000 GR
-  6 _adc                                                           0014 GR
+  6 _adc                                                           0016 GR
     _bp                                                            **** GX
  19 _delay_5                                                       00B1 GR
  19 _delay_i2c                                                     0460 GR
  19 _delay_ms                                                      0000 GR
-  6 _dis                                                           0016 GR
- 19 _main                                                          059F GR
+  6 _dis                                                           0018 GR
+ 19 _main                                                          07ED GR
  19 _readAmbientTemp                                               046B GR
  19 _readObjectTemp                                                0465 GR
  19 _readTemp                                                      0471 GR
  19 _read_adc3202                                                  0061 GR
-  6 _tmpc                                                          0012 GR
+  6 _timer_ms                                                      001A GR
+  6 _tmpc                                                          0014 GR
     a                                                              00E0 
     a.0                                                            00E0 
     a.1                                                            00E1 
@@ -525,7 +530,7 @@ Area Table
    3 RSEG1                                      size    0   flags 8
    4 REG_BANK_0                                 size    8   flags 4
    5 BIT_BANK                                   size    1   flags 4
-   6 DSEG                                       size   18   flags 0
+   6 DSEG                                       size   2E   flags 0
    7 OSEG                                       size    0   flags 4
    8 SSEG                                       size    1   flags 0
    9 ISEG                                       size    0   flags 0
@@ -535,16 +540,16 @@ Area Table
    D XSEG                                       size    0   flags 40
    E XABS                                       size    0   flags 48
    F XISEG                                      size    0   flags 40
-  10 HOME                                       size    8   flags 20
+  10 HOME                                       size   13   flags 20
   11 GSINIT0                                    size    0   flags 20
   12 GSINIT1                                    size    0   flags 20
   13 GSINIT2                                    size    0   flags 20
   14 GSINIT3                                    size    0   flags 20
   15 GSINIT4                                    size    0   flags 20
   16 GSINIT5                                    size    0   flags 20
-  17 GSINIT                                     size   36   flags 20
+  17 GSINIT                                     size   6A   flags 20
   18 GSFINAL                                    size    3   flags 20
-  19 CSEG                                       size  736   flags 20
+  19 CSEG                                       size  809   flags 20
   1A CONST                                      size    0   flags 20
   1B XINIT                                      size    0   flags 20
   1C CABS                                       size    0   flags 28

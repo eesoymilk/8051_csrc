@@ -1,7 +1,7 @@
 ;--------------------------------------------------------
 ; File Created by SDCC : free open source ANSI-C Compiler
 ; Version 3.0.1 #6083 (Dec 17 2010) (MINGW32)
-; This file was generated Tue Dec 28 09:54:25 2021
+; This file was generated Tue Dec 28 14:33:50 2021
 ;--------------------------------------------------------
 	.module Q3MIDE
 	.optsdcc -mmcs51 --model-small
@@ -10,6 +10,7 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
+	.globl _T0_isr
 	.globl _Single_ReadI2C
 	.globl _Single_WriteI2C
 	.globl _I2C_RecvByte
@@ -115,9 +116,13 @@
 	.globl _DPL
 	.globl _SP
 	.globl _P0
+	.globl _BUZZ
+	.globl _timer_ms
 	.globl _dis
 	.globl _adc
 	.globl _tmpc
+	.globl _RE
+	.globl _STATE
 	.globl __addr
 	.globl _SSD_CODE
 	.globl _delay_5
@@ -268,12 +273,20 @@ _SSD_Show_Scroll_shift_1_1:
 	.ds 1
 __addr::
 	.ds 1
+_STATE::
+	.ds 1
+_RE::
+	.ds 1
 _tmpc::
 	.ds 2
 _adc::
 	.ds 2
 _dis::
 	.ds 2
+_timer_ms::
+	.ds 4
+_BUZZ::
+	.ds 16
 ;--------------------------------------------------------
 ; overlayable items in internal ram 
 ;--------------------------------------------------------
@@ -330,6 +343,9 @@ __start__stack:
 	.area HOME    (CODE)
 __interrupt_vect:
 	ljmp	__sdcc_gsinit_startup
+	reti
+	.ds	7
+	ljmp	_T0_isr
 ;--------------------------------------------------------
 ; global & static initialisations
 ;--------------------------------------------------------
@@ -371,6 +387,33 @@ __interrupt_vect:
 	mov	(_SSD_CODE + 0x000f),#0x47
 ;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\/MLX90614.h:16: uint8_t  _addr = MLX90614_ADDRESS << 1;    // 0x5a --> 0xb4
 	mov	__addr,#0xB4
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:14: UL timer_ms = 0, BUZZ[] = {1000, 1000, 500, 250};
+	clr	a
+	mov	_timer_ms,a
+	mov	(_timer_ms + 1),a
+	mov	(_timer_ms + 2),a
+	mov	(_timer_ms + 3),a
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:14: 
+	mov	(_BUZZ + 0),#0xE8
+	mov	(_BUZZ + 1),#0x03
+	clr	a
+	mov	(_BUZZ + 2),a
+	mov	(_BUZZ + 3),a
+	mov	((_BUZZ + 0x0004) + 0),#0xE8
+	mov	((_BUZZ + 0x0004) + 1),#0x03
+	clr	a
+	mov	((_BUZZ + 0x0004) + 2),a
+	mov	((_BUZZ + 0x0004) + 3),a
+	mov	((_BUZZ + 0x0008) + 0),#0xF4
+	mov	((_BUZZ + 0x0008) + 1),#0x01
+	clr	a
+	mov	((_BUZZ + 0x0008) + 2),a
+	mov	((_BUZZ + 0x0008) + 3),a
+	mov	((_BUZZ + 0x000c) + 0),#0xFA
+	clr	a
+	mov	((_BUZZ + 0x000c) + 1),a
+	mov	((_BUZZ + 0x000c) + 2),a
+	mov	((_BUZZ + 0x000c) + 3),a
 	.area GSFINAL (CODE)
 	ljmp	__sdcc_program_startup
 ;--------------------------------------------------------
@@ -1587,32 +1630,77 @@ _readTemp:
 	pop	_bp
 	ret
 ;------------------------------------------------------------
-;Allocation info for local variables in function 'main'
+;Allocation info for local variables in function 'T0_isr'
 ;------------------------------------------------------------
 ;------------------------------------------------------------
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:14: void main(){
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:16: void T0_isr(void) __interrupt 1
 ;	-----------------------------------------
-;	 function main
+;	 function T0_isr
 ;	-----------------------------------------
-_main:
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:16: DOUT = 1; //Setting gpio input mode
-	setb	_P2_2
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:17: LOAD = 1; 
-	setb	_P2_3
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:18: CLK = 0;
-	clr	_P2_0
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:19: DIN = 0;
-	clr	_P2_1
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:20: SSD_INIT();
-	lcall	_SSD_INIT
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:22: while(1)
+_T0_isr:
+	push	bits
+	push	acc
+	push	b
+	push	dpl
+	push	dph
+	push	(0+2)
+	push	(0+3)
+	push	(0+4)
+	push	(0+5)
+	push	(0+6)
+	push	(0+7)
+	push	(0+0)
+	push	(0+1)
+	push	psw
+	mov	psw,#0x00
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:18: TH0 = (65536-1000) / 256;
+	mov	_TH0,#0xFC
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:19: TL0 = (65536-1000) % 256;
+	mov	_TL0,#0x18
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:21: timer_ms++;
+	inc	_timer_ms
+	clr	a
+	cjne	a,_timer_ms,00129$
+	inc	(_timer_ms + 1)
+	cjne	a,(_timer_ms + 1),00129$
+	inc	(_timer_ms + 2)
+	cjne	a,(_timer_ms + 2),00129$
+	inc	(_timer_ms + 3)
+00129$:
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:22: if (P3_7)   P3_7 = 0;
+	jbc	_P3_7,00130$
+	sjmp	00102$
+00130$:
+	sjmp	00103$
 00102$:
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:24: adc = read_adc3202(1);    // Read voltage from ADC channel 1
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:23: else        P3_7 = 1;
+	setb	_P3_7
+00103$:
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:24: if (timer_ms == 1000) {
+	mov	a,#0xE8
+	cjne	a,_timer_ms,00131$
+	mov	a,#0x03
+	cjne	a,(_timer_ms + 1),00131$
+	clr	a
+	cjne	a,(_timer_ms + 2),00131$
+	clr	a
+	cjne	a,(_timer_ms + 3),00131$
+	sjmp	00132$
+00131$:
+	ljmp	00119$
+00132$:
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:25: timer_ms = 0;
+	clr	a
+	mov	_timer_ms,a
+	mov	(_timer_ms + 1),a
+	mov	(_timer_ms + 2),a
+	mov	(_timer_ms + 3),a
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:26: adc = read_adc3202(1);    // Read voltage from ADC channel 1
 	mov	dpl,#0x01
 	lcall	_read_adc3202
 	mov	_adc,dpl
 	mov	(_adc + 1),dph
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:25: SerialDIN(4,SSD_CODE[adc / 1000] | 0x80);
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:27: SerialDIN(4,SSD_CODE[adc / 1000] | 0x80);
 	mov	a,#0xE8
 	push	acc
 	mov	a,#0x03
@@ -1632,7 +1720,7 @@ _main:
 	mov	dpl,#0x04
 	lcall	_SerialDIN
 	dec	sp
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:26: SerialDIN(3,SSD_CODE[adc % 1000 / 100]);
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:28: SerialDIN(3,SSD_CODE[adc % 1000 / 100]);
 	mov	a,#0xE8
 	push	acc
 	mov	a,#0x03
@@ -1662,7 +1750,7 @@ _main:
 	mov	dpl,#0x03
 	lcall	_SerialDIN
 	dec	sp
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:27: SerialDIN(2,SSD_CODE[adc % 100 / 10]);
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:29: SerialDIN(2,SSD_CODE[adc % 100 / 10]);
 	mov	a,#0x64
 	push	acc
 	clr	a
@@ -1692,7 +1780,7 @@ _main:
 	mov	dpl,#0x02
 	lcall	_SerialDIN
 	dec	sp
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:28: SerialDIN(1,SSD_CODE[adc % 10]);
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:30: SerialDIN(1,SSD_CODE[adc % 10]);
 	mov	a,#0x0A
 	push	acc
 	clr	a
@@ -1711,12 +1799,65 @@ _main:
 	mov	dpl,#0x01
 	lcall	_SerialDIN
 	dec	sp
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:30: tmpc = readObjectTemp();
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:32: if (adc < 1000) {
+	clr	c
+	mov	a,_adc
+	subb	a,#0xE8
+	mov	a,(_adc + 1)
+	subb	a,#0x03
+	clr	a
+	rlc	a
+	mov	r2,a
+	jz	00115$
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:33: STATE = 0;
+	mov	_STATE,#0x00
+	sjmp	00116$
+00115$:
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:34: } else if (adc >= 1000 && adc < 1500) {
+	mov	a,r2
+	jnz	00111$
+	clr	c
+	mov	a,_adc
+	subb	a,#0xDC
+	mov	a,(_adc + 1)
+	subb	a,#0x05
+	jnc	00111$
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:35: STATE = 1;
+	mov	_STATE,#0x01
+	sjmp	00116$
+00111$:
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:36: } else if (adc >= 1500 && adc < 2000) {
+	clr	c
+	mov	a,_adc
+	subb	a,#0xDC
+	mov	a,(_adc + 1)
+	subb	a,#0x05
+	jc	00107$
+	mov	a,_adc
+	subb	a,#0xD0
+	mov	a,(_adc + 1)
+	subb	a,#0x07
+	jnc	00107$
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:37: STATE = 2;
+	mov	_STATE,#0x02
+	sjmp	00116$
+00107$:
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:38: } else if (adc >= 2000) {
+	clr	c
+	mov	a,_adc
+	subb	a,#0xD0
+	mov	a,(_adc + 1)
+	subb	a,#0x07
+	jc	00116$
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:39: STATE = 3;
+	mov	_STATE,#0x03
+00116$:
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:42: tmpc = readObjectTemp();
 	lcall	_readObjectTemp
 	lcall	___fs2sint
 	mov	_tmpc,dpl
 	mov	(_tmpc + 1),dph
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:31: SerialDIN(7,SSD_CODE[tmpc % 1000 / 100]);
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:43: SerialDIN(7,SSD_CODE[tmpc % 1000 / 100]);
 	mov	a,#0xE8
 	push	acc
 	mov	a,#0x03
@@ -1746,7 +1887,7 @@ _main:
 	mov	dpl,#0x07
 	lcall	_SerialDIN
 	dec	sp
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:32: SerialDIN(6,SSD_CODE[tmpc % 100 / 10] | 0x80);
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:44: SerialDIN(6,SSD_CODE[tmpc % 100 / 10] | 0x80);
 	mov	a,#0x64
 	push	acc
 	clr	a
@@ -1777,7 +1918,7 @@ _main:
 	mov	dpl,#0x06
 	lcall	_SerialDIN
 	dec	sp
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:33: SerialDIN(5,SSD_CODE[tmpc % 10]);
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:45: SerialDIN(5,SSD_CODE[tmpc % 10]);
 	mov	a,#0x0A
 	push	acc
 	clr	a
@@ -1796,10 +1937,56 @@ _main:
 	mov	dpl,#0x05
 	lcall	_SerialDIN
 	dec	sp
-;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:44: delay_ms(100);
-	mov	dptr,#0x0064
-	lcall	_delay_ms
-	ljmp	00102$
+00119$:
+	pop	psw
+	pop	(0+1)
+	pop	(0+0)
+	pop	(0+7)
+	pop	(0+6)
+	pop	(0+5)
+	pop	(0+4)
+	pop	(0+3)
+	pop	(0+2)
+	pop	dph
+	pop	dpl
+	pop	b
+	pop	acc
+	pop	bits
+	reti
+;------------------------------------------------------------
+;Allocation info for local variables in function 'main'
+;------------------------------------------------------------
+;------------------------------------------------------------
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:49: void main(){
+;	-----------------------------------------
+;	 function main
+;	-----------------------------------------
+_main:
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:52: EA = 1;
+	setb	_EA
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:53: ET0 = 1;
+	setb	_ET0
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:55: TMOD = 0x01;
+	mov	_TMOD,#0x01
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:56: TH0 = (65536 - 1000) / 256;
+	mov	_TH0,#0xFC
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:57: TL0 = (65536 - 1000) % 256;
+	mov	_TL0,#0x18
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:58: TR0 = 1;
+	setb	_TR0
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:60: DOUT = 1; //Setting gpio input mode
+	setb	_P2_2
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:61: LOAD = 1; 
+	setb	_P2_3
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:62: CLK = 0;
+	clr	_P2_0
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:63: DIN = 0;
+	clr	_P2_1
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:64: SSD_INIT();
+	lcall	_SSD_INIT
+;	E:\GitHub\8051_csrc\final_practice\Q3MIDE\Q3MIDE.c:66: while(1)
+00102$:
+	sjmp	00102$
 	.area CSEG    (CODE)
 	.area CONST   (CODE)
 	.area XINIT   (CODE)

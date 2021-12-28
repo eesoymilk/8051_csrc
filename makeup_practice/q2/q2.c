@@ -19,8 +19,8 @@ UC rythm[16] = {
     3, 3, 3, 3
 };
 
-void PlaySong();
 void PlayOneNote(UC idx);
+void PlaySong();
 
 void T0_isr(void) interrupt 1
 {
